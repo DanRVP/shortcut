@@ -1,0 +1,21 @@
+#!/usr/bin/php
+<?php
+
+if (php_sapi_name() !== 'cli') {
+    exit;
+}
+
+require __DIR__ . '/vendor/autoload.php';
+
+use shortcut\App;
+
+$app = new App();
+$method = !empty($argv[1]) ? $argv[1] : 'main';
+
+
+if (method_exists($app, $method) && is_callable([$app, 'main'])) { 
+    $app->{$method}();
+} else {
+    echo 'Method does not exist or is not callable.';
+    exit;
+}
