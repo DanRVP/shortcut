@@ -1,13 +1,13 @@
 #!/usr/bin/php
 <?php
 
+use shortcut\App;
+
 if (php_sapi_name() !== 'cli') {
     exit;
 }
 
 require __DIR__ . '/vendor/autoload.php';
-
-use shortcut\App;
 
 $app = new App();
 $method = !empty($argv[1]) ? $argv[1] : 'main';

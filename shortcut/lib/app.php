@@ -24,6 +24,7 @@ class App
             if (property_exists($event, 'references')) {
                 foreach ($event->references as $reference) {
                     if ($reference->entity_type == "workflow-state") {
+                        $reference->changed_at = $event->changed_at;
                         $workflow_actions[] = $reference;
                     }
                 }
