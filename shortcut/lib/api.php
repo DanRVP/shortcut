@@ -38,4 +38,16 @@ class Api
 
         return $ch;
     }
+
+    public function getStoriesFromIteration($id)
+    {
+        $url = "https://api.app.shortcut.com/api/v3/iterations/$id/stories";
+        return $this->get($url);
+    }
+
+    public function getStoryHistory($id)
+    {
+        $url = "https://api.app.shortcut.com/api/v3/stories/$id/history";
+        return $this->get($url);
+    }
 }

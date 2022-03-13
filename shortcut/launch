@@ -11,10 +11,10 @@ require __DIR__ . '/vendor/autoload.php';
 
 $app = new App();
 $method = !empty($argv[1]) ? $argv[1] : 'main';
+$param = $argv[2];
 
-
-if (method_exists($app, $method) && is_callable([$app, 'main'])) { 
-    $app->{$method}();
+if (method_exists($app, $method) && is_callable([$app, $method])) { 
+    $app->{$method}($param);
 } else {
     echo 'Method does not exist or is not callable.';
     exit;
