@@ -1,17 +1,15 @@
-#!/usr/bin/php
 <?php
-
 namespace shortcut;
 
 use DateTime;
 use shortcut\Api;
 use shortcut\Secrets;
 
-class App 
+class App
 {
     /**
      * Just echos out some garabage idk.
-     * 
+     *
      * @return void
      */
     public function main()
@@ -22,9 +20,9 @@ class App
 
     /**
      * Finds the average time a story sits in review within a specified iteration.
-     * 
+     *
      * @param int $id Iteration ID.
-     * 
+     *
      * @return void
      */
     public function iteration($id)
@@ -36,7 +34,10 @@ class App
 
         echo "\nRunning...\n";
         $api = new Api(Secrets::API_KEY);
-        $stories = $api->getStoriesFromIteration($id);
+        if (!$stories = $api->getStoriesFromIteration($id)) {
+            echo "\nRequest failed - no error.";
+            return;
+        }
 
         $total_review_time = 0;
         $number_of_stories = 0;
@@ -54,7 +55,7 @@ class App
         }
 
         $average_mins = $total_review_time / $number_of_stories;
-        $average_days = round($average_mins / 1440, 2); 
+        $average_days = round($average_mins / 1440, 2);
 
         echo "\nTotal time in review (mins): $total_review_time\n";
         echo "Total number of stories: $number_of_stories\n";
@@ -63,9 +64,9 @@ class App
 
     /**
      * Get an ID from a shortcut app url.
-     * 
+     *
      * @param string $url
-     * 
+     *
      * @return string|int
      */
     private function getStoryIdFromUrl($url)
@@ -76,9 +77,9 @@ class App
 
     /**
      * Gets workflow actions out of a story history object.
-     * 
+     *
      * @param object $story_history A story history object from Shortcut.
-     * 
+     *
      * @return object A workflow action object with datetime string attached.
      */
     private function extractWorkFlowActions($story_history)
@@ -97,12 +98,12 @@ class App
 
         return $workflow_actions;
     }
-    
+
     /**
      * Finds the first time a story was put into 'Ready for Review'.
-     * 
+     *
      * @param array $actions An array of action objects.
-     * 
+     *
      * @return string Datetime string.
      */
     private function getFirstReviewDateTime($actions)
@@ -124,9 +125,9 @@ class App
 
     /**
      * Finds the last time a story was put into 'Ready for Deploy'.
-     * 
+     *
      * @param array $actions An array of action objects.
-     * 
+     *
      * @return string Datetime string.
      */
     private function getLastDeployDateTime($actions)
@@ -147,11 +148,11 @@ class App
     }
 
     /**
-     * Calculate a time difference in minutes. 
-     * 
+     * Calculate a time difference in minutes.
+     *
      * @param string $start Datetime string.
      * @param string $end Datetime string.
-     * 
+     *
      * @return integer Interval in minutes.
      */
     private function calculateTimeInReview($start, $end)
@@ -162,7 +163,6 @@ class App
 
         $start_object = new DateTime($start);
         $end_object = new DateTime($end);
-
         $diff = $start_object->diff($end_object);
 
         $minutes = 0;
@@ -170,6 +170,15 @@ class App
         $minutes += $diff->h * 60;
         $minutes += $diff->i;
 
+        // Calculate and subtract weekend hours
+        $weekend_days = 0;
+        for($i = $start_object; $i <= $end_object; $i->modify('+1 day')){
+            if (in_array($i->format('N'), [6, 7])) {
+                $weekend_days ++;
+            }
+        }
+
+        $minutes -= ($weekend_days * 1440);
         return $minutes;
     }
 
@@ -177,7 +186,7 @@ class App
      * Callback function for sorting objects in 'changed_at' in order ASC.
      * @param object $a First object.
      * @param object $b Second object.
-     * 
+     *
      * @return int
      */
     private function compareDates($a, $b)
