@@ -78,4 +78,10 @@ class Api
         $url = self::SHORTCUT_API_URL . "stories/$id/history";
         return $this->get($url);
     }
+
+    public function getIteration($id)
+    {
+        $url = self::SHORTCUT_API_URL . "iterations/$id";
+        return $this->get($url);
+    }
 }
