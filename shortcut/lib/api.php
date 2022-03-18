@@ -84,4 +84,10 @@ class Api
         $url = self::SHORTCUT_API_URL . "iterations/$id";
         return $this->get($url);
     }
+
+    public function getMembers()
+    {
+        $url = self::SHORTCUT_API_URL . "members";
+        return $this->get($url);
+    }
 }

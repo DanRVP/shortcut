@@ -194,16 +194,66 @@ class Iteration
     public function totalPoints()
     {
         if (empty($this->id)) {
+            return "\nAn iteration ID is required.\n";
+        }
+
+        if (empty($iteration_data = $this->api->getIteration($this->id))) {
+            return "\nThere was a problem finding an iteration with an ID of: ." . $this->id . "\n";
+        }
+
+        return "\n" . $iteration_data->stats->num_points_done . ' points completed in ' . $iteration_data->name . "\n";
+    }
+
+    public function developerScoreboard()
+    {
+        if (empty($this->id)) {
             echo "\nAn iteration ID is required.\n";
             return;
         }
 
-        if (empty($iteration_data = $this->api->getIteration($this->id))) {
-            echo "\nThere was a problem finding an iteration with an ID of: ." . $this->id . "\n";
+        echo "\nRunning...\n";
+        if (!$stories = $this->api->getStoriesFromIteration($this->id)) {
+            echo "\nRequest failed - no error.";
             return;
         }
 
-        echo "\n" . $iteration_data->stats->num_points_done . ' points completed in ' . $iteration_data->name . "\n";
-        return;
+        $members = new Members();
+        if (empty($devs = $members->getActiveDevs())) {
+            echo "\nRequest failed - There was a problem finding devs in your workspace";
+            return;
+        }
+
+        $dev_points = [];
+        foreach ($devs as $key => $value) {
+            $dev_points[$value] = $this->getDevPoints($stories, $key);
+        }
+
+        arsort($dev_points);
+        $scoreboard = "\nTotal Number of points in iteration per team member\n";
+        $scoreboard .= "----------------------------------------------------\n";
+        $position = 1;
+        foreach($dev_points as $key => $value) {
+            if (empty($value)) {
+                continue;
+            }
+
+            $string = $position . '. ' . $key . ': ' . $value . " points\n";
+            $scoreboard .= $string;
+            $position ++;
+        }
+
+        return $scoreboard;
+    }
+
+    public function getDevPoints($stories, $dev_id)
+    {
+        $points = 0;
+        foreach ($stories as $story) {
+            if (in_array($dev_id, $story->owner_ids)) {
+                $points += ($story->estimate / count($story->owner_ids));
+            }
+        }
+
+        return $points;
     }
 }

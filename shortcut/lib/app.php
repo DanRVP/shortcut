@@ -26,14 +26,15 @@ class App
         $iteration->timeInReview();
     }
 
-    public function iterationPointsRank($id)
+    public function iterationScoreboard($id)
     {
         $iteration = new Iteration($id);
+        echo $iteration->developerScoreboard();
     }
 
     public function totalPoints($id)
     {
         $iteration = new Iteration($id);
-        $iteration->totalPoints();
+        echo $iteration->totalPoints();
     }
 }
