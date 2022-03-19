@@ -33,6 +33,22 @@ class Api
         return json_decode($response);
     }
 
+    public function put($url, $data)
+    {
+        $curl = $this->makeShortcutCurl($url);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+        try {
+            $response = curl_exec($curl);
+        } catch (\Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+
+        curl_close($curl);
+        return json_decode($response);
+    }
+
     /**
      * Creates a CURL session and adds headers.
      *
@@ -89,5 +105,16 @@ class Api
     {
         $url = self::SHORTCUT_API_URL . "members";
         return $this->get($url);
+    }
+
+    public function updateIteration($id, $update_fields)
+    {
+        // $iteration = $this->getIteration($id);
+        // foreach ($update_fields as $key => $value) {
+        //     $iteration->{$key} = $value;
+        // }
+
+        $url = self::SHORTCUT_API_URL . "iterations/$id";
+        return $this->put($url, json_encode($update_fields));
     }
 }

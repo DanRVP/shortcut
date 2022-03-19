@@ -47,9 +47,11 @@ class Iteration
         $average_mins = $total_review_time / $number_of_stories;
         $average_days = round($average_mins / 1440, 2);
 
-        echo "\nTotal time in review (mins): $total_review_time\n";
-        echo "Total number of stories: $number_of_stories\n";
-        echo "\nAverage time in review per story: $average_days days\n";
+        $report = "\nTotal time in review (mins): $total_review_time\n";
+        $report .= "Total number of stories: $number_of_stories\n";
+        $report .= "Average time in review per story: $average_days days\n";
+
+        return $report;
     }
 
     /**
@@ -255,5 +257,28 @@ class Iteration
         }
 
         return $points;
+    }
+
+    public function generateReportDescription()
+    {
+        $iteration = $this->api->getIteration($this->id);
+        $description = $iteration->description;
+        $title = '### Shortcut Stats Report';
+        $report = "\n\n" . $title;
+        $report .= $this->timeInReview();
+        $report .= $this->totalPoints();
+        $report .= $this->developerScoreboard();
+
+        $parts = explode($title, $description);
+        return $parts[0] . $report;
+    }
+
+    public function uploadReport($report)
+    {
+        $description = [
+            'description' => $report,
+        ];
+
+        return $this->api->updateIteration($this->id, $description);
     }
 }

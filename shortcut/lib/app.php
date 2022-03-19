@@ -23,7 +23,7 @@ class App
     public function iterationReviewTime($id)
     {
         $iteration = new Iteration($id);
-        $iteration->timeInReview();
+        echo $iteration->timeInReview();
     }
 
     public function iterationScoreboard($id)
@@ -32,9 +32,24 @@ class App
         echo $iteration->developerScoreboard();
     }
 
-    public function totalPoints($id)
+    public function iterationTotalPoints($id)
     {
         $iteration = new Iteration($id);
         echo $iteration->totalPoints();
+    }
+
+    public function iterationReport($id)
+    {
+        $iteration = new Iteration($id);
+        $report = $iteration->generateReportDescription();
+        echo $report;
+        $result = $iteration->uploadReport($report);
+        if (!$result) {
+            echo "\nThere was a problem uploading the report.";
+        } else if (!empty($result->errors)) {
+            print_r($result->errors);
+        } else {
+            echo "\nReport uploaded successfully.";
+        }
     }
 }
