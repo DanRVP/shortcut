@@ -232,7 +232,7 @@ class Iteration
 
         arsort($dev_points);
         $scoreboard = "\nTotal Number of points in iteration per team member\n";
-        $scoreboard .= "----------------------------------------------------\n";
+        $scoreboard .= "---------------------------------------------------\n";
         $position = 1;
         foreach($dev_points as $key => $value) {
             if (empty($value)) {
@@ -251,7 +251,7 @@ class Iteration
     {
         $points = 0;
         foreach ($stories as $story) {
-            if (in_array($dev_id, $story->owner_ids)) {
+            if (in_array($dev_id, $story->owner_ids) && !is_null($story->completed_at)) {
                 $points += ($story->estimate / count($story->owner_ids));
             }
         }

@@ -52,4 +52,15 @@ class App
             echo "\nReport uploaded successfully.";
         }
     }
+
+    public function help()
+    {
+        echo("\nCommands:\n");
+        echo("------------------------------------------------------------------------------------------------\n");
+        echo("iterationReviewTime - Calculate average time in review\n");
+        echo("iterationScoreboard - Show a scoreboard of developer points per sprint\n");
+        echo("iterationTotalPoints - Show total points in an iteration\n");
+        echo("iterationReport - Does all of the above and pushes it to the iteration's description in Shortcut\n");
+        echo("------------------------------------------------------------------------------------------------\n");
+    }
 }
