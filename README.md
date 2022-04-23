@@ -1,4 +1,4 @@
-# Shortcut: Average Time in Review
+# Shortcut stats report
 
 To run:
 * Add a file called `secrets.php` to `shortcut/lib`
@@ -17,4 +17,4 @@ class Secrets
 * To get a Shortcut API key see: https://help.shortcut.com/hc/en-us/articles/205701199-Shortcut-API-Tokens
 * Open cmd
 * cd {wherever you cloned to}/shortcut
-* php launch iteration {shortcut iteration ID}
+* `php Shortcut help` to get a list of commands 
