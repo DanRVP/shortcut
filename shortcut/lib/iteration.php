@@ -231,8 +231,7 @@ class Iteration
         }
 
         arsort($dev_points);
-        $scoreboard = "\nTotal Number of points in iteration per team member\n";
-        $scoreboard .= "---------------------------------------------------\n";
+        $scoreboard = "\n### Total Number of points in iteration per team member\n";
         $position = 1;
         foreach($dev_points as $key => $value) {
             if (empty($value)) {

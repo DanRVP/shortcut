@@ -109,11 +109,6 @@ class Api
 
     public function updateIteration($id, $update_fields)
     {
-        // $iteration = $this->getIteration($id);
-        // foreach ($update_fields as $key => $value) {
-        //     $iteration->{$key} = $value;
-        // }
-
         $url = self::SHORTCUT_API_URL . "iterations/$id";
         return $this->put($url, json_encode($update_fields));
     }
