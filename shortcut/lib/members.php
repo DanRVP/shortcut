@@ -15,9 +15,9 @@ class Members
         $active_members = [];
         foreach($members as $member) {
             if (
-                !$member->disabled 
-                && $member->role !== 'observer' 
-                && in_array($member->profile->id, Secrets::DEV_IDS)
+                !$member->disabled
+                && $member->role !== 'observer'
+                && in_array($member->profile->email_address, Secrets::DEV_EMAILS)
             ) {
                 $active_members[$member->id] = $member->profile->name;
             }
