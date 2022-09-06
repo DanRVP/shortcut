@@ -234,10 +234,6 @@ class Iteration
         $scoreboard = "\n### Total Number of points in iteration per team member\n";
         $position = 1;
         foreach($dev_points as $key => $value) {
-            if (empty($value)) {
-                continue;
-            }
-
             $string = $position . '. ' . $key . ': ' . $value . " points\n";
             $scoreboard .= $string;
             $position ++;
