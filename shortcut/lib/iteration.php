@@ -8,14 +8,33 @@ use shortcut\Secrets;
 
 class Iteration
 {
+    /**
+     * @var integer ID of the iteration we are looking at.
+     */
     protected $id = null;
+
+    /**
+     * @var Api $api
+     */
     protected $api = null;
 
-    public function __construct($id){
-        $this->id = $id;
+    /**
+     * @param null|integer $id
+     */
+    public function __construct($id = null) {
         $this->api = new Api(Secrets::API_KEY);
+        if (empty($id)) {
+            $id = $this->getCurrentIteration();
+        }
+
+        $this->id = $id;
     }
 
+    /**
+     * Get the average TIR (days) and total TIR (mins) in a human readable string.
+     *
+     * @return string
+     */
     public function timeInReview()
     {
         if (empty($this->id)) {
@@ -193,6 +212,11 @@ class Iteration
         return $first_date < $second_date ? -1 : 1;
     }
 
+    /**
+     * Get the total points completed in an iteration
+     *
+     * @return string
+     */
     public function totalPoints()
     {
         if (empty($this->id)) {
@@ -206,6 +230,11 @@ class Iteration
         return "\n" . $iteration_data->stats->num_points_done . ' points completed in ' . $iteration_data->name . "\n";
     }
 
+    /**
+     * Generate a developer 'scoreboard' as a string.
+     *
+     * @return string
+     */
     public function developerScoreboard()
     {
         if (empty($this->id)) {
@@ -242,6 +271,13 @@ class Iteration
         return $scoreboard;
     }
 
+    /**
+     * Get the total points per dev.
+     *
+     * @param mixed $stories
+     * @param integer $dev_id
+     * @return integer
+     */
     public function getDevPoints($stories, $dev_id)
     {
         $points = 0;
@@ -254,6 +290,11 @@ class Iteration
         return $points;
     }
 
+    /**
+     * Generate the body of the report as a string.
+     *
+     * @return string
+     */
     public function generateReportDescription()
     {
         $iteration = $this->api->getIteration($this->id);
@@ -268,6 +309,11 @@ class Iteration
         return $parts[0] . $report;
     }
 
+    /**
+     * Upload a generated iteration report to Shortcut
+     *
+     * @param string $report
+     */
     public function uploadReport($report)
     {
         $description = [
@@ -275,5 +321,40 @@ class Iteration
         ];
 
         return $this->api->updateIteration($this->id, $description);
+    }
+
+    /**
+     * Find the current iteration.
+     *
+     * @return null|integer
+     */
+    private function getCurrentIteration()
+    {
+        $current_date = new DateTime();
+        $iterations = (array) $this->api->listIterations();
+
+        // Go by newest first to shorten time iterating over result set.
+        usort($iterations, function ($x, $y) {
+            $x_date = new DateTime($x->end_date);
+            $y_date = new DateTime($y->end_date);
+
+            if ($x_date == $y_date) {
+                return 0;
+            }
+
+            return $x_date < $y_date ? 1 : -1;
+        });
+
+        foreach ($iterations as $iteration) {
+            $end = new DateTime($iteration->end_date);
+            $start = new DateTime($iteration->start_date);
+
+            if ($current_date <= $end && $current_date >= $start) {
+                echo "Using $iteration->id as the current iteration...\n";
+                return $iteration->id;
+            }
+        }
+
+        return null;
     }
 }

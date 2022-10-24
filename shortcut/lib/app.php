@@ -3,7 +3,7 @@ namespace shortcut;
 class App
 {
     /**
-     * Just echos out some garabage idk.
+     * Print out some basic info about the script.
      *
      * @return void
      */
@@ -26,18 +26,33 @@ class App
         echo $iteration->timeInReview();
     }
 
+    /**
+     * Genrate and print out an iteration scoreboard of developer points.
+     *
+     * @param integer $id
+     */
     public function iterationScoreboard($id)
     {
         $iteration = new Iteration($id);
         echo $iteration->developerScoreboard();
     }
 
+    /**
+     * Generate and print out a human readable string showing total points
+     * completed in a sprint.
+     *
+     * @param integer id
+     */
     public function iterationTotalPoints($id)
     {
         $iteration = new Iteration($id);
         echo $iteration->totalPoints();
     }
 
+    /**
+     * Generate a comprehensive stats report for a specified iteration and
+     * append it to the iteration's description.
+     */
     public function iterationReport($id)
     {
         $iteration = new Iteration($id);
@@ -53,14 +68,17 @@ class App
         }
     }
 
+    /**
+     * Print out a list of valid commands and a description of what they do.
+     */
     public function help()
     {
-        echo("\nCommands:\n");
-        echo("------------------------------------------------------------------------------------------------\n");
-        echo("iterationReviewTime - Calculate average time in review\n");
-        echo("iterationScoreboard - Show a scoreboard of developer points per sprint\n");
-        echo("iterationTotalPoints - Show total points in an iteration\n");
-        echo("iterationReport - Does all of the above and pushes it to the iteration's description in Shortcut\n");
-        echo("------------------------------------------------------------------------------------------------\n");
+        echo "\nCommands:\n";
+        echo "------------------------------------------------------------------------------------------------\n";
+        echo "iterationReviewTime - Calculate average time in review\n";
+        echo "iterationScoreboard - Show a scoreboard of developer points per sprint\n";
+        echo "iterationTotalPoints - Show total points in an iteration\n";
+        echo "iterationReport - Does all of the above and pushes it to the iteration's description in Shortcut\n";
+        echo "------------------------------------------------------------------------------------------------\n";
     }
 }

@@ -112,4 +112,9 @@ class Api
         $url = self::SHORTCUT_API_URL . "iterations/$id";
         return $this->put($url, json_encode($update_fields));
     }
+
+    public function listIterations()
+    {
+        return $this->get(self::SHORTCUT_API_URL . 'iterations');
+    }
 }
